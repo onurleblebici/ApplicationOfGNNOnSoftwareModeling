@@ -25,7 +25,50 @@ def findNode(nodes, cellId):
     for i in range(len(nodes)):
         if nodes[i] == cellId:
             return i
+    #print(nodes)
+    print("cell not found" + cellId)
+    #exit(0)
     return -1
+
+#def findEdgesByTarget(edges, targetNodeId, includeSelfLoops):
+#    foundEdges = []
+#    for e in edges:
+#        if e[1] == targetNodeId and (includeSelfLoops == True or e[0] != e[1]):
+#            foundEdges.append(e) 
+#    return foundEdges
+
+def findEdgesByTargetCell(edges, targetCellId, includeSelfLoops):
+    foundEdges = []
+    for e in edges:
+        if e[1] == targetCellId and (includeSelfLoops == True or e[0] != e[1]):
+            foundEdges.append(e) 
+    
+    if hasSubGraph(targetCellId):
+        
+
+    return foundEdges
+
+
+#def findEdgesBySource(edges, sourceNodeId, includeSelfLoops):
+#    foundEdges = []
+#    for e in edges:
+#        if e[0] == sourceNodeId and (includeSelfLoops == True or e[0] != e[1]):
+#            foundEdges.append(e) 
+#    return foundEdges
+
+def findEdgesBySourceCell(edges, sourceCellId, includeSelfLoops):
+    foundEdges = []
+    for e in edges:
+        if e[0] == sourceCellId and (includeSelfLoops == True or e[0] != e[1]):
+            foundEdges.append(e) 
+    return foundEdges
+
+def hasSelfLoopEdge(edges,cellId):
+    for e in edges:
+        #if the node is self connection and it also has a sub graph
+        if e[0] == e[1] and cellId == e[0]:
+            return True
+    return False
 
 def createMatrix(rowNo,colNo):
     matrix=[] #define empty matrix
@@ -36,42 +79,86 @@ def createMatrix(rowNo,colNo):
         matrix.append(row) #add fully defined column into the row
     return matrix
 
-def parse(xmlRoot):
+def createAdjacencyMatrix(edges,nodes,generate_edge_symmetry):
+    adjacencyMatrix = createMatrix(len(nodes),len(nodes))
+    for i in range(len(edges)):
+        sourceCellId = edges[i][0]
+        targetCellId = edges[i][1]
+        sourceNode =findNode(nodes,sourceCellId)
+        targetNode = findNode(nodes,targetCellId)
+        adjacencyMatrix[sourceNode][targetNode] = 1
+        if generate_edge_symmetry == True:
+            adjacencyMatrix[targetNode][sourceNode] = 1
+    return adjacencyMatrix
+
+def parseGraph(xmlRoot, cellIdPathPrefix):
     nodes = []
     edges = []
-    
-    for mxCell in xmlRoot.iter('mxCell'):
-        mxCellId = mxCell.get('id')
-        if mxCell.get('vertex') == "1":
-            mxCellName = mxCell.find('de.upb.adt.tsd.EventNode').get("name")
-            if mxCellName == "[":
-                entryNodeId = mxCellId
-            elif mxCellName == "]":
-                exitNodeId = mxCellId
-            else:
-                #skip virtual entry and exit nodes
-                nodes.append(mxCellId)
-                print('Vertex with cellId:',mxCellId , 'named:',mxCellName, ' nodeId:'+ str(len(nodes)-1))
+    entryCellId = None
+    exitCellId = None
+    subGraphs = []
 
-    adjacencyMatrix = createMatrix(len(nodes),len(nodes))
-    print(adjacencyMatrix)
-    for mxCell in xmlRoot.iter('mxCell'):
+    for mxCell in xmlRoot.findall('root/mxCell'):
+        mxCellId = cellIdPathPrefix + mxCell.get('id')
+        
+        if mxCell.get('vertex') == "1":
+            eventNode = mxCell.find('de.upb.adt.tsd.EventNode')
+            #some elements has newline char
+            mxCellName = eventNode.get("name").replace("\n","").strip()
+            #some elements has &# like suffixes on their names
+            if mxCellName == "[" or mxCellName.startswith("[&#"):
+                entryCellId = mxCellId
+                mxCellName = "["
+            elif mxCellName == "]" or mxCellName.startswith("]&#"):
+                mxCellName = "]"
+                exitCellId = mxCellId
+            #else:
+                #skip virtual entry and exit nodes
+            
+            nodes.append(mxCellId)
+
+            print('Vertex with cellId:',mxCellId , 'named:<',mxCellName, '> nodeId:'+ str(len(nodes)-1))
+            
+            mxGraphModel = eventNode.find('mxGraphModel')
+            if mxGraphModel is not None:
+                #if vertex has child graph
+                print('HAS CHILD GRAPH->START PARSING')
+                childNodes, childEdges, childEntryCellId, childExitCellId, childSubGraphs = parseGraph(mxGraphModel,mxCellId + "-")
+                
+                # first existing then new nodes; in this way previously added nodes indexes doesn't changes.
+                nodes = nodes + childNodes
+                edges = edges + childEdges
+                subGraphs = subGraphs + childSubGraphs
+                #subGraphs.append([mxCellId,childEntryCellId,childExitCellId,findNode(nodes,mxCellId),findNode(nodes,childEntryCellId),findNode(nodes,childExitCellId)])
+                subGraphs.append([mxCellId,childEntryCellId,childExitCellId])
+                print('HAS CHILD GRAPH->END PARSING')
+            else :
+                print('HAS NO CHILD')
+
+            
+
+    #adjacencyMatrix = createMatrix(len(nodes),len(nodes))
+    #print(adjacencyMatrix)
+    for mxCell in xmlRoot.findall('root/mxCell'):
         mxCellId = mxCell.get('id')
         if mxCell.get('edge') == "1":
-            sourceCellId = mxCell.get('source')
-            targetCellId = mxCell.get('target')
-            sourceNodeId = findNode(nodes,sourceCellId)
-            targetNodeId = findNode(nodes,targetCellId)
-            if sourceNodeId != -1 and targetNodeId != -1:
-                adjacencyMatrix[sourceNodeId][targetNodeId] = mxCellId
-                edges.append([sourceNodeId,targetNodeId])
-                print('Edge from-to cell(', sourceCellId,',',targetCellId, ') node(',sourceNodeId,',', targetNodeId,')')
+            sourceCellId = cellIdPathPrefix + mxCell.get('source')
+            targetCellId = cellIdPathPrefix + mxCell.get('target')
+            #each recursive loop has its own nodes array because of this edges can not use node index for source and target
+            #after all parse operation completed we should convert it all cellIds (source and target) to node index (source and target)
+            edges.append([sourceCellId,targetCellId])
 
-    
+    return nodes, edges, entryCellId, exitCellId, subGraphs
 
-    return nodes,edges,adjacencyMatrix
+#def convertEdgesCellIdToNodeIndex(edges,nodes):
+#    convertedEdges =[]
+#    for edge in edges:
+#        convertedEdges.append([findNode(nodes,edge[0]), findNode(nodes,edge[1])])
+#    return convertedEdges
 
 def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
+    #in ve out node'ların Id'leri aynı olacağı için sistem çalımayacak findNode işlevsiz kalıyor
+    raise NotImplementedError("in ve out node'ların Id'leri aynı olacağı için sistem çalımayacak findNode işlevsiz kalıyor")
     undirectedNodes = [0] * len(nodes) * 2
     undirectedNodeFeatures = [0] * len(nodes) * 2
     
@@ -89,29 +176,31 @@ def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
         undirectedNodes[i+len(nodes)] = nodes[i]
         undirectedNodeFeatures[i+len(nodes)] = nodeFeatures[i]
         #always add a edge between splited in - out nodes
-        undirectedEdges.append([i,i+len(nodes)])
-        undirectedEdges.append([i+len(nodes),i])
+        undirectedEdges.append([nodes[i],nodes[i+len(nodes)]])
+        undirectedEdges.append([nodes[i+len(nodes)],nodes[i]])
+        #undirectedEdges.append([i,i+len(nodes)])
+        #undirectedEdges.append([i+len(nodes),i])
+
         #there is no feature availeable for in - out connection
         undirectedEdgeFeatures.append([0]*len(edgeFeatures[0]))
         undirectedEdgeFeatures.append([0]*len(edgeFeatures[0]))
 
-    undirectedAdjacencyMatrix = createMatrix(len(undirectedNodes),len(undirectedNodes))
     for edgeIndex in range(len(edges)):
         #out node
-        sourceId = edges[edgeIndex][0]
+        sourceCellId = edges[edgeIndex][0]
         #in node
-        targetId = edges[edgeIndex][1]
-
-        undirectedAdjacencyMatrix[sourceId][targetId+len(nodes)] = 1
-        undirectedAdjacencyMatrix[targetId+len(nodes)][sourceId] = 1
+        targetCellId = edges[edgeIndex][1]
+        sourceNodeIndex = findNode(nodes,sourceCellId)
+        targetNodeIndex = findNode(nodes,targetCellId)
         #no need to add (to prevent duplicate edges) self loop its already added on edge definition
         if sourceId != targetId:
-            undirectedEdges.append([sourceId,targetId+len(nodes)])
-            undirectedEdges.append([targetId+len(nodes),sourceId])
+            undirectedEdges.append([sourceCellId,nodes[targetNodeIndex+len(nodes)]])
+            #undirectedEdges.append([sourceId,targetId+len(nodes)])
+            #undirectedEdges.append([targetId+len(nodes),sourceId])
             undirectedEdgeFeatures.append(edgeFeatures[edgeIndex])
             undirectedEdgeFeatures.append(edgeFeatures[edgeIndex])
 
-    return undirectedNodes,undirectedEdges,undirectedAdjacencyMatrix,undirectedNodeFeatures,undirectedEdgeFeatures
+    return undirectedNodes,undirectedEdges,undirectedNodeFeatures,undirectedEdgeFeatures
 
 def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry):
     nodesFileName = os.path.join("output",filenamePrefix + "_nodes.txt")
@@ -138,18 +227,143 @@ def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdg
     with open(edgesFilename, "w") as f:
         f.write("{0}\t{1}\t\n".format(len(edges_clone),len(edgeFeatures_clone[0])))
         for i in range(len(edges_clone)):
-            f.write("{0}\t{1}\t".format(edges_clone[i][0],edges_clone[i][1]))
+            f.write("{0}\t{1}\t".format(findNode(nodes, edges_clone[i][0]), findNode(nodes, edges_clone[i][1])))
             for j in range(len(edgeFeatures_clone[0])):
                 f.write("{0}\t".format(edgeFeatures_clone[i][j]))
             f.write("\n")
+
+
+def removeSubgraphNodes(nodes,subGraphs):
+    refinedNodes = nodes.copy()
+    for nodeCellId in nodes:
+        for subGraph in subGraphs:
+            if nodeCellId == subGraph[0] or nodeCellId == subGraph[1] or nodeCellId == subGraph[2]:
+                refinedNodes.remove(nodeCellId)
+                break
+    return refinedNodes
+
+def removeSubgraphEdges(edges,subGraphs):
+    refinedEdges = []
+    for edge in edges:
+        containsSubGraphNode = False
+        for subGraph in subGraphs:
+            #if the edge source or target node is the subGraph group, entry or exit node then ignore that edge
+            if edge[0] == subGraph[0] or edge[0] == subGraph[1] or edge[0] == subGraph[2] or edge[1] == subGraph[0] or edge[1] == subGraph[1] or edge[1] == subGraph[2]:
+                print("Removing edge for subGraph:" + str(subGraph[0]) + " edge:" + str(edge))
+                containsSubGraphNode = True
+                break
+        if containsSubGraphNode == False:
+            refinedEdges.append(edge)
+    return refinedEdges
+
+def hasSubGraph(subGraphs,cellId):
+    for sg in subGraphs:
+        if sg[0] == cellId:
+            return True
+    return False
+
+def xxx(subGraphs,edges,nodes,cellId):
+    if hasSubGraph(subGraphs,cellId):
+        return None
+    
+    return None
+
+def reOrganizeSubGraphs(nodes, edges, subGraphs):
+    
+    reOrganizedEdges = removeSubgraphEdges(edges,subGraphs)
+
+    print("pre clean completed for subgraph")
+
+    #print("reOrganizedNodes: " +str(len(reOrganizedNodes)) + " nodelen:"+str(len(nodes)))
+    #print(reOrganizedNodes)
+    #print("reOrganizedEdges: " +str(len(reOrganizedEdges)) + " edgelen:"+str(len(edges)))
+    #print(reOrganizedEdges)
+    #exit(1)
+    for g in subGraphs:
+        groupNodeCellId = g[0]
+        subGraphEntryCellId = g[1]
+        subGraphExitCellId = g[2]
+
+        #groupNodeId = g[3] 
+        #subGraphEntryNodeId = g[4]
+        #subGraphExitNodeId = g[5] 
+        
+        #entry of the subgraph
+        sourceEdges = findEdgesByTargetCell(edges,groupNodeCellId,False)
+        targetEdges = findEdgesBySourceCell(edges,subGraphEntryCellId,False)
+        print("for target " + groupNodeCellId + " and the source " + subGraphEntryCellId + " new edges will be generating")
+        print("sourceEdges " + str(sourceEdges) + " targetEdges" + str(targetEdges))
+        for sourceEdge in sourceEdges:
+            for targetEdge in targetEdges:
+                #find nodes from new reOrganized nodes
+                #sourceEdge[0] is the source node
+                #targetEdge[1] is the target node
+                #reOrganizedSourceNodeId = findNode(reOrganizedNodes, nodes[sourceEdge[0]])
+                #reOrganizedTargetNodeId = findNode(reOrganizedNodes, nodes[targetEdge[1]])
+                #reOrganizedEdges.append([reOrganizedSourceNodeId,reOrganizedTargetNodeId])
+                print("new edge added : " + str([sourceEdge[0],targetEdge[1]]))
+                reOrganizedEdges.append([sourceEdge[0],targetEdge[1]])
+        
+        #exit of the subgraph
+        sourceEdges = findEdgesByTargetCell(edges,subGraphExitCellId,False)
+        targetEdges = findEdgesBySourceCell(edges,groupNodeCellId,False)
+        for sourceEdge in sourceEdges:
+            for targetEdge in targetEdges:
+                #find nodes from new reOrganized nodes
+                #sourceEdge[0] is the source node
+                #targetEdge[1] is the target node
+                #reOrganizedSourceNodeId = findNode(reOrganizedNodes, nodes[sourceEdge[0]])
+                #reOrganizedTargetNodeId = findNode(reOrganizedNodes, nodes[targetEdge[1]])
+                #reOrganizedEdges.append([reOrganizedSourceNodeId,reOrganizedTargetNodeId])
+                reOrganizedEdges.append([sourceEdge[0],targetEdge[1]])
+
+        
+        if hasSelfLoopEdge(edges,groupNodeCellId) == True:
+            sourceEdges = findEdgesByTargetCell(edges,subGraphExitCellId,False)
+            targetEdges = findEdgesBySourceCell(edges,subGraphEntryCellId,False)
+            for sourceEdge in sourceEdges:
+                for targetEdge in targetEdges:
+                    #find nodes from new reOrganized nodes
+                    #sourceEdge[0] is the source node
+                    #targetEdge[1] is the target node
+                    #reOrganizedSourceNodeId = findNode(reOrganizedNodes, nodes[sourceEdge[0]])
+                    #reOrganizedTargetNodeId = findNode(reOrganizedNodes, nodes[targetEdge[1]])
+                    #reOrganizedEdges.append([reOrganizedSourceNodeId,reOrganizedTargetNodeId])
+                    reOrganizedEdges.append([sourceEdge[0],targetEdge[1]])
+
+    reOrganizedNodes = removeSubgraphNodes(nodes,subGraphs)
+    return reOrganizedNodes,reOrganizedEdges
+
+
+
+
 
 def main():
     args = parse_args()
     tree = ET.parse(args.input)
     root = tree.getroot()
 
-    nodes,edges,adjacencyMatrix = parse(root)
     
+    nodes, edges ,_ ,_ , subGraphs = parseGraph(root,"")
+    #edges = convertEdgesCellIdToNodeIndex(edges,nodes)
+
+    print("BEFORE REORGANIZE")
+    print("nodes")
+    print(nodes)
+    print("edges")
+    print(edges)    
+    print("subGraphs")
+    print(subGraphs)
+
+
+    nodes, edges = reOrganizeSubGraphs(nodes,edges,subGraphs)
+    
+    print("AFTER REORGANIZE")
+    print("nodes")
+    print(nodes)
+    print("edges")
+    print(edges)
+
     nodeFeatures = []
     for i in range(len(nodes)):
         nodeFeatures.append([])
@@ -164,25 +378,23 @@ def main():
     
 
     if eval(args.as_undirected) == True:
-        nodes,edges,adjacencyMatrix,nodeFeatures,edgeFeatures = convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures)
+        nodes,edges,nodeFeatures,edgeFeatures = convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures)
     
     generateEdgeSymmetry = (eval(args.generate_edge_symmetry)==True) & (eval(args.as_undirected)==False)
-    if generateEdgeSymmetry:
-        for i in range(len(adjacencyMatrix)):
-            for j in range(len(adjacencyMatrix[i])):
-                if i < j:
-                    adjacencyMatrix[j][i] = adjacencyMatrix[i][j]
-
-    print("nodes")
-    print(nodes)
-    print("nodeFeatures")
-    print(nodeFeatures)
-    print("edges")
-    print(edges)
-    print("edgeFeatures")
-    print(edgeFeatures)
-    print("adjacencyMatrix")
-    print(adjacencyMatrix)
+    print("createAdjacencyMatrix")
+    adjacencyMatrix = createAdjacencyMatrix(edges,nodes,generateEdgeSymmetry)
+    
+    
+    #print("nodes")
+    #print(nodes)
+    #print("nodeFeatures")
+    #print(nodeFeatures)
+    #print("edges")
+    #print(edges)
+    #print("edgeFeatures")
+    #print(edgeFeatures)
+    #print("adjacencyMatrix")
+    #print(adjacencyMatrix)
     writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry)
 
 
