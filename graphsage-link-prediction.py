@@ -27,40 +27,58 @@ def load_from_file(filePrefix):
     with open(nodes_filename) as f:
         num_nodes, num_node_features = map(int, f.readline().split('\t')[:-1])
         if num_node_features > 0:
-            node_features = np.zeros((num_nodes, num_node_features))
+            node_features = np.zeros((num_node_features,num_nodes))
             for i, line in enumerate(f.readlines()):
                 features = np.array(list(map(float,line.split('\t')[1:-1])))
-                node_features[i] = features
+                for fIndex in range(num_node_features):
+                    node_features[fIndex][i] = features[fIndex]
+                #node_features[i] = features
 
     # read edge features
     with open(edges_filename) as f:
         num_edges, num_edge_features = map(int, f.readline().split('\t')[:-1])
         senders = np.zeros(num_edges, dtype=int)
-        receivers = np.zeros(num_edges, dtype=int)    
+        receivers = np.zeros(num_edges, dtype=int)  
         if num_edge_features > 0:
-            edge_features = np.zeros((num_edges, num_edge_features))
+            edge_features = np.zeros((num_edge_features, num_edges))
 
         for i, line in enumerate(f.readlines()):
             elements = line.split('\t')
             senders[i] = int(elements[0])
             receivers[i] = int(elements[1])
             if edge_features is not None:
-                edge_features[i] = np.array(list(map(float, elements[2:-1])))
+                features = np.array(list(map(float, elements[2:-1])))
+                for fIndex in range(num_edge_features):
+                    edge_features[fIndex][i] = features[fIndex]
+                #edge_features[i] = np.array(list(map(float, elements[2:-1])))
 
-    
     square_numeric_edges = pd.DataFrame( {"source": senders, "target": receivers})
+    square_node_data = pd.DataFrame( { "x": node_features[0].tolist(), "y": node_features[1].tolist(), "z" : node_features[2].tolist()  } )
+
     #feature_array = np.array([[1.0, -0.2], [2.0, 0.3], [3.0, 0.0], [4.0, -0.5]], dtype=np.float32)
-    print("node_features")
-    print(node_features)
-    print("square_numeric_edges")
-    print(square_numeric_edges)
-    square_numeric = StellarGraph(node_features, square_numeric_edges)
+    #print("node_features")
+    #print(node_features)
+    #print("square_numeric_edges")
+    #print(square_numeric_edges)
+    square_numeric = StellarGraph(square_node_data, edges = square_numeric_edges)
+
+    print("GRAPH INFO")
+    print("....................................")
+    print(square_numeric.info())
+    print("....................................")
+
     return square_numeric
 
 
 #dataset = datasets.Cora()
 #display(HTML(dataset.description))
 #G, _ = dataset.load(subject_as_feature=True)
+
+#print("dataset")
+#print(dataset)
+#print("G")
+#print(G)
+#exit(1)
 
 parser = argparse.ArgumentParser(description='mxe file parser')
 parser.add_argument('--input-prefix', default=None, help='path of the mxe file')
@@ -71,12 +89,9 @@ if args.input_prefix is None:
     exit(0)
 
 G = load_from_file(args.input_prefix)
-print(G.info())
-
-#print(G)
-#exit(1)
 
 edge_splitter_test = EdgeSplitter(G)
+
 
 # Randomly sample a fraction p=0.1 of all positive links, and same number of negative links, from G, and obtain the
 # reduced graph G_test with the sampled links removed:
@@ -87,15 +102,20 @@ G_test, edge_ids_test, edge_labels_test = edge_splitter_test.train_test_split(
 # Define an edge splitter on the reduced graph G_test:
 edge_splitter_train = EdgeSplitter(G_test)
 
+
 # Randomly sample a fraction p=0.1 of all positive links, and same number of negative links, from G_test, and obtain the
 # reduced graph G_train with the sampled links removed:
 G_train, edge_ids_train, edge_labels_train = edge_splitter_train.train_test_split(
     p=0.1, method="global", keep_connected=True
 )
 
+print("GRAPH TRAIN INFO")
 print(G_train.info())
 
+print("GRAPH TEST INFO")
 print(G_test.info())
+
+print("................................")
 
 batch_size = 20
 epochs = 20
@@ -108,7 +128,7 @@ train_flow = train_gen.flow(edge_ids_train, edge_labels_train, shuffle=True)
 test_gen = GraphSAGELinkGenerator(G_test, batch_size, num_samples)
 test_flow = test_gen.flow(edge_ids_test, edge_labels_test)
 
-layer_sizes = [20, 20]
+layer_sizes = [20, 10]
 graphsage = GraphSAGE(
     layer_sizes=layer_sizes, generator=train_gen, bias=True, dropout=0.3
 )

@@ -42,10 +42,6 @@ def findEdgesByTargetCell(edges, targetCellId, includeSelfLoops):
     for e in edges:
         if e[1] == targetCellId and (includeSelfLoops == True or e[0] != e[1]):
             foundEdges.append(e) 
-    
-    if hasSubGraph(targetCellId):
-        
-
     return foundEdges
 
 
@@ -262,15 +258,14 @@ def hasSubGraph(subGraphs,cellId):
             return True
     return False
 
-def xxx(subGraphs,edges,nodes,cellId):
-    if hasSubGraph(subGraphs,cellId):
-        return None
-    
-    return None
 
 def reOrganizeSubGraphs(nodes, edges, subGraphs):
     
     reOrganizedEdges = removeSubgraphEdges(edges,subGraphs)
+    if len(reOrganizedEdges) == len(edges):
+        #nothing to re-organize
+        return nodes, edges, False
+
 
     print("pre clean completed for subgraph")
 
@@ -332,7 +327,7 @@ def reOrganizeSubGraphs(nodes, edges, subGraphs):
                     reOrganizedEdges.append([sourceEdge[0],targetEdge[1]])
 
     reOrganizedNodes = removeSubgraphNodes(nodes,subGraphs)
-    return reOrganizedNodes,reOrganizedEdges
+    return reOrganizedNodes,reOrganizedEdges, True
 
 
 
@@ -355,9 +350,10 @@ def main():
     print("subGraphs")
     print(subGraphs)
 
-
-    nodes, edges = reOrganizeSubGraphs(nodes,edges,subGraphs)
-    
+    continueReOrganization = True
+    while continueReOrganization == True:
+        nodes, edges, continueReOrganization = reOrganizeSubGraphs(nodes,edges,subGraphs)
+        
     print("AFTER REORGANIZE")
     print("nodes")
     print(nodes)
