@@ -1,0 +1,18 @@
+1   Error   
+2   Info    
+3   Input   data    Characteristics Contingents Prices  Special
+4   Help    
+5   Save    
+6   Edit
+7   Add New
+8   Ok      
+9   Cancel  
+10  Process Login
+11  Calculate
+12  Validate    Verify
+13  Navigate    Link
+14  Delete
+15  Get
+16  Load
+17  Select
+18  Print

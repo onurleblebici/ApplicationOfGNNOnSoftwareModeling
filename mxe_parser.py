@@ -2,6 +2,8 @@ import xml.etree.ElementTree as ET
 import argparse
 import os
 import numpy as np
+from tabulate import tabulate
+import re
 
 def parse_args():
     parser = argparse.ArgumentParser(description='mxe file parser')
@@ -11,6 +13,7 @@ def parse_args():
     parser.add_argument('--number-of-edge-features', default=0, help='prefix of the output files')
     parser.add_argument('--as-undirected', default=False, help='Splits the original nodes as in-node and out-node and converts the graph to undirected')
     parser.add_argument('--generate-edge-symmetry', default=False, help='For directed graphs, keeps its original nodes but coverts the edge as undirected')
+    parser.add_argument('--embeddings', default="embeddings.txt",help="mxe cell embeddings for automatic node feature extraction")
     args = parser.parse_args()
 
     if args.input is None:
@@ -25,17 +28,8 @@ def findNode(nodes, cellId):
     for i in range(len(nodes)):
         if nodes[i] == cellId:
             return i
-    #print(nodes)
     print("cell not found" + cellId)
-    #exit(0)
     return -1
-
-#def findEdgesByTarget(edges, targetNodeId, includeSelfLoops):
-#    foundEdges = []
-#    for e in edges:
-#        if e[1] == targetNodeId and (includeSelfLoops == True or e[0] != e[1]):
-#            foundEdges.append(e) 
-#    return foundEdges
 
 def findEdgesByTargetCell(edges, targetCellId, includeSelfLoops):
     foundEdges = []
@@ -43,14 +37,6 @@ def findEdgesByTargetCell(edges, targetCellId, includeSelfLoops):
         if e[1] == targetCellId and (includeSelfLoops == True or e[0] != e[1]):
             foundEdges.append(e) 
     return foundEdges
-
-
-#def findEdgesBySource(edges, sourceNodeId, includeSelfLoops):
-#    foundEdges = []
-#    for e in edges:
-#        if e[0] == sourceNodeId and (includeSelfLoops == True or e[0] != e[1]):
-#            foundEdges.append(e) 
-#    return foundEdges
 
 def findEdgesBySourceCell(edges, sourceCellId, includeSelfLoops):
     foundEdges = []
@@ -87,7 +73,7 @@ def createAdjacencyMatrix(edges,nodes,generate_edge_symmetry):
             adjacencyMatrix[targetNode][sourceNode] = 1
     return adjacencyMatrix
 
-def parseGraph(xmlRoot, cellIdPathPrefix):
+def parseGraph(xmlRoot, cellIdPathPrefix, cells):
     nodes = []
     edges = []
     entryCellId = None
@@ -112,6 +98,7 @@ def parseGraph(xmlRoot, cellIdPathPrefix):
                 #skip virtual entry and exit nodes
             
             nodes.append(mxCellId)
+            cells[mxCellId] = mxCellName
 
             print('Vertex with cellId:',mxCellId , 'named:<',mxCellName, '> nodeId:'+ str(len(nodes)-1))
             
@@ -119,7 +106,7 @@ def parseGraph(xmlRoot, cellIdPathPrefix):
             if mxGraphModel is not None:
                 #if vertex has child graph
                 print('HAS CHILD GRAPH->START PARSING')
-                childNodes, childEdges, childEntryCellId, childExitCellId, childSubGraphs = parseGraph(mxGraphModel,mxCellId + "-")
+                childNodes, childEdges, childEntryCellId, childExitCellId, childSubGraphs = parseGraph(mxGraphModel,mxCellId + "-",cells)
                 
                 # first existing then new nodes; in this way previously added nodes indexes doesn't changes.
                 nodes = nodes + childNodes
@@ -145,12 +132,6 @@ def parseGraph(xmlRoot, cellIdPathPrefix):
             edges.append([sourceCellId,targetCellId])
 
     return nodes, edges, entryCellId, exitCellId, subGraphs
-
-#def convertEdgesCellIdToNodeIndex(edges,nodes):
-#    convertedEdges =[]
-#    for edge in edges:
-#        convertedEdges.append([findNode(nodes,edge[0]), findNode(nodes,edge[1])])
-#    return convertedEdges
 
 def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
     #in ve out node'ların Id'leri aynı olacağı için sistem çalımayacak findNode işlevsiz kalıyor
@@ -198,7 +179,8 @@ def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
 
     return undirectedNodes,undirectedEdges,undirectedNodeFeatures,undirectedEdgeFeatures
 
-def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry):
+def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells):
+    nodeMappingsFileName = os.path.join("output",filenamePrefix + "_node_mappings.txt")
     nodesFileName = os.path.join("output",filenamePrefix + "_nodes.txt")
     edgesFilename = os.path.join("output",filenamePrefix + "_edges.txt")
 
@@ -209,6 +191,14 @@ def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdg
             for j in range(len(nodeFeatures[0])):
                 f.write("{0}\t".format(nodeFeatures[i][j]))
             f.write("\n")
+    
+    table = []
+    for i in range(len(nodes)):
+        table.append([i,nodes[i],cells[nodes[i]]])
+
+    with open(nodeMappingsFileName, "w") as f:
+        f.write(tabulate(table, headers=["NodeId","MxeCellId", "MxeCellName"]))
+        
 
     edges_clone = edges
     edgeFeatures_clone = edgeFeatures
@@ -330,7 +320,21 @@ def reOrganizeSubGraphs(nodes, edges, subGraphs):
     return reOrganizedNodes,reOrganizedEdges, True
 
 
+def loadEmbeddings(embeddingsFilename):
+    nodeFeatureEmbeddings = dict()
+    with open(embeddingsFilename) as f:
+        for i, line in enumerate(f.readlines()):
+            embeddings = re.sub("[^\w]", " ",  line).split()            
+            nodeFeatureEmbeddings[map(float,embeddings[0])] = embeddings[1:]
+    return nodeFeatureEmbeddings
 
+def findEmbedding(embeddings,text):
+    for e in embeddings:
+        for word in embeddings[e]:
+            if re.search(word, text, re.IGNORECASE):
+                print("embedding found for text:'"+text+"' val:'"+str(e)+"'")
+                return e
+    return 0
 
 
 def main():
@@ -338,33 +342,40 @@ def main():
     tree = ET.parse(args.input)
     root = tree.getroot()
 
-    
-    nodes, edges ,_ ,_ , subGraphs = parseGraph(root,"")
+    cells = dict()
+    nodes, edges ,_ ,_ , subGraphs = parseGraph(root,"",cells)
     #edges = convertEdgesCellIdToNodeIndex(edges,nodes)
 
-    print("BEFORE REORGANIZE")
-    print("nodes")
-    print(nodes)
-    print("edges")
-    print(edges)    
-    print("subGraphs")
-    print(subGraphs)
+    #print("BEFORE REORGANIZE")
+    #print("nodes")
+    #print(nodes)
+    #print("edges")
+    #print(edges)    
+    #print("subGraphs")
+    #print(subGraphs)
 
     continueReOrganization = True
     while continueReOrganization == True:
         nodes, edges, continueReOrganization = reOrganizeSubGraphs(nodes,edges,subGraphs)
         
-    print("AFTER REORGANIZE")
-    print("nodes")
-    print(nodes)
-    print("edges")
-    print(edges)
+    #print("AFTER REORGANIZE")
+    #print("nodes")
+    #print(nodes)
+    #print("edges")
+    #print(edges)
+    nodeFeatureEmbeddings = loadEmbeddings(args.embeddings)
+    print("nodeFeatureEmbeddings")
+    print(nodeFeatureEmbeddings)
 
     nodeFeatures = []
     for i in range(len(nodes)):
         nodeFeatures.append([])
         for j in range(int(args.number_of_node_features)):
-            nodeFeatures[i].append(0)
+            val = 0
+            if i == 0:
+                print("searching embedding for:"+cells[nodes[i]])
+                val = findEmbedding(nodeFeatureEmbeddings,cells[nodes[i]])
+            nodeFeatures[i].append(val)
     
     edgeFeatures = []
     for i in range(len(edges)):
@@ -391,7 +402,7 @@ def main():
     #print(edgeFeatures)
     #print("adjacencyMatrix")
     #print(adjacencyMatrix)
-    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry)
+    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells)
 
 
 
