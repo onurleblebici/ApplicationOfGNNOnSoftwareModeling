@@ -53,7 +53,8 @@ def load_from_file(filePrefix):
                 #edge_features[i] = np.array(list(map(float, elements[2:-1])))
 
     square_numeric_edges = pd.DataFrame( {"source": senders, "target": receivers})
-    square_node_data = pd.DataFrame( { "x": node_features[0].tolist(), "y": node_features[1].tolist(), "z" : node_features[2].tolist()  } )
+    square_node_data = pd.DataFrame( { "x": node_features[0].tolist() } )
+    #square_node_data = pd.DataFrame( { "x": node_features[0].tolist(), "y": node_features[1].tolist(), "z" : node_features[2].tolist()  } )
 
     #feature_array = np.array([[1.0, -0.2], [2.0, 0.3], [3.0, 0.0], [4.0, -0.5]], dtype=np.float32)
     #print("node_features")

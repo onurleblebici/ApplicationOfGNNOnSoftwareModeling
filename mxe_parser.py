@@ -324,8 +324,9 @@ def loadEmbeddings(embeddingsFilename):
     nodeFeatureEmbeddings = dict()
     with open(embeddingsFilename) as f:
         for i, line in enumerate(f.readlines()):
-            embeddings = re.sub("[^\w]", " ",  line).split()            
-            nodeFeatureEmbeddings[map(float,embeddings[0])] = embeddings[1:]
+            embeddings = re.sub("[^\w]", " ",  line).split()      
+            print("embeddings key:'"+embeddings[0]+"' values:"+str(embeddings[1:]));      
+            nodeFeatureEmbeddings[embeddings[0]] = embeddings[1:]
     return nodeFeatureEmbeddings
 
 def findEmbedding(embeddings,text):
@@ -365,14 +366,14 @@ def main():
     #print(edges)
     nodeFeatureEmbeddings = loadEmbeddings(args.embeddings)
     print("nodeFeatureEmbeddings")
-    print(nodeFeatureEmbeddings)
+    print(tabulate(nodeFeatureEmbeddings))
 
     nodeFeatures = []
     for i in range(len(nodes)):
         nodeFeatures.append([])
         for j in range(int(args.number_of_node_features)):
             val = 0
-            if i == 0:
+            if j == 0:
                 print("searching embedding for:"+cells[nodes[i]])
                 val = findEmbedding(nodeFeatureEmbeddings,cells[nodes[i]])
             nodeFeatures[i].append(val)
