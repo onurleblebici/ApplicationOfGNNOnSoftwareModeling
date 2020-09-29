@@ -14,6 +14,7 @@ def parse_args():
     parser.add_argument('--as-undirected', default=False, help='Splits the original nodes as in-node and out-node and converts the graph to undirected')
     parser.add_argument('--generate-edge-symmetry', default=False, help='For directed graphs, keeps its original nodes but coverts the edge as undirected')
     parser.add_argument('--embeddings', default="embeddings.txt",help="mxe cell embeddings for automatic node feature extraction")
+    parser.add_argument('--tab-to-eol', default=True,help="adds an extra tab to the end of each line")
     args = parser.parse_args()
 
     if args.input is None:
@@ -179,17 +180,17 @@ def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
 
     return undirectedNodes,undirectedEdges,undirectedNodeFeatures,undirectedEdgeFeatures
 
-def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells):
+def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,tab_to_eol):
     nodeMappingsFileName = os.path.join("output",filenamePrefix + "_node_mappings.txt")
     nodesFileName = os.path.join("output",filenamePrefix + "_nodes.txt")
     edgesFilename = os.path.join("output",filenamePrefix + "_edges.txt")
 
     with open(nodesFileName, "w") as f:
-        f.write("{0}\t{1}\t\n".format(len(nodes),len(nodeFeatures[0])))
+        f.write("{0}\t{1}\n".format(len(nodes),len(nodeFeatures[0])))
         for i in range(len(nodes)):
-            f.write("{0}\t".format(i))
+            f.write("{0}".format(i))
             for j in range(len(nodeFeatures[0])):
-                f.write("{0}\t".format(nodeFeatures[i][j]))
+                f.write("\t{0}".format(nodeFeatures[i][j]))
             f.write("\n")
     
     table = []
@@ -211,11 +212,11 @@ def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdg
                 edgeFeatures_clone.append(edgeFeatures[i])
 
     with open(edgesFilename, "w") as f:
-        f.write("{0}\t{1}\t\n".format(len(edges_clone),len(edgeFeatures_clone[0])))
+        f.write("{0}\t{1}\n".format(len(edges_clone),len(edgeFeatures_clone[0])))
         for i in range(len(edges_clone)):
-            f.write("{0}\t{1}\t".format(findNode(nodes, edges_clone[i][0]), findNode(nodes, edges_clone[i][1])))
+            f.write("{0}\t{1}".format(findNode(nodes, edges_clone[i][0]), findNode(nodes, edges_clone[i][1])))
             for j in range(len(edgeFeatures_clone[0])):
-                f.write("{0}\t".format(edgeFeatures_clone[i][j]))
+                f.write("\t{0}".format(edgeFeatures_clone[i][j]))
             f.write("\n")
 
 
@@ -403,7 +404,8 @@ def main():
     #print(edgeFeatures)
     #print("adjacencyMatrix")
     #print(adjacencyMatrix)
-    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells)
+    print(args.tab_to_eol)
+    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,args.tab_to_eol)
 
 
 
