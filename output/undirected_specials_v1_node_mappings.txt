@@ -1,0 +1,13 @@
+  NodeId    MxeCellId  MxeCellName
+--------  -----------  --------------
+       0            2  [
+       1            3  ]
+       2            4  Special data 1
+       3            5  add
+       4            6  delete Special
+       5            7  ok
+       6            8  cancel
+       7            9  save
+       8           10  edit Special
+       9           11  Special data 2
+      10           12  cancel

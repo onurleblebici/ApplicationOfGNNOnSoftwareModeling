@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
-from stellargraph import StellarGraph
-from stellargraph import datasets
+#from stellargraph import StellarGraph
+#from stellargraph import datasets
 
 def load_from_file(filePrefix):
     nodes_filename = filePrefix + "_nodes.txt"
@@ -51,7 +51,21 @@ def load_from_file(filePrefix):
     square_numeric = StellarGraph(square_node_data, edges = square_numeric_edges)
     return square_numeric
 
- 
+
+print(list(range(16)))
+exit(1)
+predict_test_idx = np.loadtxt("./output/undirected_specials_v1_edges.txt", dtype=int)
+predict_predictions = [[0.47188008], [0.46186212], [0.493792  ], [0.47236148], [0.4704455 ], [0.47386518], [0.47806606], [0.47236148], [0.47236148], [0.47236148], [0.46775827], [0.48441136], [0.49104285], [0.46775827], [0.4963412 ], [0.47044554]]
+predict_test_idx_and_pred = np.concatenate([predict_test_idx, predict_predictions], 1)
+
+#train_idx = np.loadtxt("test.txt", dtype=int)
+
+print(predict_test_idx_and_pred)
+#print((train_idx[:, 0], train_idx[:, 1]))
+#print(train_idx[:, 0])
+#print(train_idx[:, 1])
+exit(1)
+
 gx = load_from_file("./output/directed_iselta")
 print(gx.info())
 
