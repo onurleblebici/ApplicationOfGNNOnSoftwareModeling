@@ -1,0 +1,48 @@
+  NodeId    MxeCellId  MxeCellName
+--------  -----------  --------------------------------------
+       0          268  [
+       1          275  log in
+       2          266  access as a teacher
+       3          274  turn editing on
+       4          314  open class records
+       5          270  ]
+       6          440  delete class
+       7          184  confirm deletion
+       8          219  select the deletable class
+       9          150  add new class
+      10          151  enter the name of the class
+      11          152  enter the class detail
+      12          158  submit the class
+      13          177  select the editable class
+      14          163  update the name of the class
+      15          164  update the class detail
+      16          234  assign schedule
+      17          471  add new schedule
+      18          472  enter the days ofthe class
+      19          473  enter the hours of the class
+      20          478  submit the class schedule
+      21          510  update the days ofthe class
+      22          512  update the hours of the class
+      23          222  select the editable schedule
+      24          133  submit attendance
+      25          137  confirm your identity
+      26          317  open notification settings
+      27          319  confirm notification settings
+      28          428  receive notifications as SMS
+      29          334  select the existing schedule
+      30          205  select the existing class
+      31          332  view schedule
+      32          206  view class
+      33          253  open student attendance records
+      34          379  select a class-list attendance record
+      35          235  select an editable student-record
+      36          413  edit attendance status
+      37          245  submit attendance record update
+      38          420  trace attendance activity of the class
+      39          223  select the existing record
+      40          179  view record
+      41          337  monitor current attendance status
+      42          555  open myattendance records
+      43          559  access as a student
+      44           99  show the barcode to the barcodereader
+      45          101  enter barcode manually

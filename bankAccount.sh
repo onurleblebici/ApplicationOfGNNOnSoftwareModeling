@@ -1,0 +1,8 @@
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-baseProduct.mxe" --output bankAccountProduct-baseProduct --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-cancellable.mxe" --output bankAccountProduct-cancellable --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-credit.mxe" --output bankAccountProduct-credit --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-creditWithDailyLimit.mxe" --output bankAccountProduct-creditWithDailyLimit --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-dailyLimit.mxe" --output bankAccountProduct-dailyLimit --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-interest.mxe" --output bankAccountProduct-interest --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-overdraft.mxe" --output bankAccountProduct-overdraft --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt
+python3 mxe_parser.py --input "data/BankAccountPL/bankAccountProduct-overdraftWithInterest.mxe" --output bankAccountProduct-overdraftWithInterest --as-undirected False --generate-edge-symmetry False --embeddings bankAccount_embeddings.txt

@@ -1,0 +1,34 @@
+  NodeId    MxeCellId  MxeCellName
+--------  -----------  --------------------------------------
+       0          268  [
+       1          275  log in
+       2          266  access as a teacher
+       3          274  turn editing on
+       4          314  open class records
+       5          270  ]
+       6          440  delete class
+       7          184  confirm deletion
+       8          219  select the deletable class
+       9          150  add new class
+      10          151  enter the name of the class
+      11          152  enter the class detail
+      12          158  submit the class
+      13          177  select the editable class
+      14          163  update the name of the class
+      15          164  update the class detail
+      16          133  submit attendance
+      17          137  confirm your identity
+      18          317  open notification settings
+      19          319  confirm notification settings
+      20          428  receive notifications as SMS
+      21          334  select the existing schedule
+      22          205  select the existing class
+      23          332  view schedule
+      24          206  view class
+      25          253  open student attendance records
+      26          379  select a class-list attendance record
+      27          235  select an editable student-record
+      28          413  edit attendance status
+      29          245  submit attendance record update
+      30          420  trace attendance activity of the class
+      31          127  show the QR code to the QR code reader

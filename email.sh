@@ -1,0 +1,13 @@
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbook.mxe" --output emailProduct-addressbook --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbookAutoresponder.mxe" --output emailProduct-addressbookAutoresponder --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbookAutoresponderEncrypt.mxe" --output emailProduct-addressbookAutoresponderEncrypt --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbookAutoresponderEncryptSign.mxe" --output emailProduct-addressbookAutoresponderEncryptSign --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbookAutoresponderForward.mxe" --output emailProduct-addressbookAutoresponderForward --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbookAutoresponderSign.mxe" --output emailProduct-addressbookAutoresponderSign --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-addressbookEncrypt.mxe" --output emailProduct-addressbookEncrypt --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-autoresponder.mxe" --output emailProduct-autoresponder --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-autoresponderEncrypt.mxe" --output emailProduct-autoresponderEncrypt --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-autoresponderForward.mxe" --output emailProduct-autoresponderForward --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-baseProduct.mxe" --output emailProduct-baseProduct --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-encrypt.mxe" --output emailProduct-encrypt --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt
+python3 mxe_parser.py --input "data/EmailPL/emailProduct-forward.mxe" --output emailProduct-forward --as-undirected False --generate-edge-symmetry False --embeddings email_embeddings.txt

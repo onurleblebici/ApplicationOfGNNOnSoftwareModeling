@@ -1,0 +1,21 @@
+  NodeId    MxeCellId  MxeCellName
+--------  -----------  ------------------------------------
+       0           40  [
+       1           66  ]
+       2           92  get balance
+       3          167  select deposit
+       4          168  put money
+       5          178  enter deposit amount
+       6          185  select withdraw
+       7          186  take money
+       8          187  enter withdraw amount
+       9          199  cancel withdraw
+      10          202  confirm daily limit excess
+      11          207  enter daily withdraw limit
+      12          107  confirm overdraft limit excess
+      13          214  enter overdraft limit
+      14          218  request an interest rate
+      15          219  confirm  interest rate approved
+      16          119  confirm  interest rate disapproved
+      17          221  enter days left
+      18          110  get estimated interest for days left

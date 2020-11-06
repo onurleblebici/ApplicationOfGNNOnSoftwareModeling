@@ -9,7 +9,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='mxe file parser')
     parser.add_argument('--input', default=None, help='path of the mxe file')
     parser.add_argument('--output', default=None, help='prefix of the output files')
-    parser.add_argument('--number-of-node-features', default=0, help='prefix of the output files')
+    parser.add_argument('--number-of-node-features', default=1, help='prefix of the output files')
     parser.add_argument('--number-of-edge-features', default=0, help='prefix of the output files')
     parser.add_argument('--as-undirected', default=False, help='Splits the original nodes as in-node and out-node and converts the graph to undirected')
     parser.add_argument('--generate-edge-symmetry', default=False, help='For directed graphs, keeps its original nodes but coverts the edge as undirected')
@@ -325,7 +325,9 @@ def loadEmbeddings(embeddingsFilename):
     nodeFeatureEmbeddings = dict()
     with open(embeddingsFilename) as f:
         for i, line in enumerate(f.readlines()):
-            embeddings = re.sub("[^\w]", " ",  line).split()      
+            embeddings = re.sub("\n","",  line).split(",")      
+            for i in range(len(embeddings)):
+                embeddings[i] = embeddings[i].strip()
             print("embeddings key:'"+embeddings[0]+"' values:"+str(embeddings[1:]));      
             nodeFeatureEmbeddings[embeddings[0]] = embeddings[1:]
     return nodeFeatureEmbeddings
@@ -335,7 +337,10 @@ def findEmbedding(embeddings,text):
         for word in embeddings[e]:
             if re.search(word, text, re.IGNORECASE):
                 print("embedding found for text:'"+text+"' val:'"+str(e)+"'")
-                return e
+                return e    
+    if text == "[" or text == "]":
+        return 0
+    print("embedding NOT FOUND for text:'"+text+"'")
     return 0
 
 
@@ -368,6 +373,7 @@ def main():
     nodeFeatureEmbeddings = loadEmbeddings(args.embeddings)
     print("nodeFeatureEmbeddings")
     print(tabulate(nodeFeatureEmbeddings))
+    
 
     nodeFeatures = []
     for i in range(len(nodes)):
@@ -378,7 +384,7 @@ def main():
                 print("searching embedding for:"+cells[nodes[i]])
                 val = findEmbedding(nodeFeatureEmbeddings,cells[nodes[i]])
             nodeFeatures[i].append(val)
-    
+    exit(1)
     edgeFeatures = []
     for i in range(len(edges)):
         edgeFeatures.append([])

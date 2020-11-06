@@ -1,0 +1,31 @@
+  NodeId    MxeCellId  MxeCellName
+--------  -----------  ---------------------------------------
+       0          268  [
+       1          275  log in
+       2          266  access as a teacher
+       3          274  turn editing on
+       4          314  open class records
+       5          270  ]
+       6          120  read the access card to the card reader
+       7          133  submit attendance
+       8          137  confirm your identity
+       9          317  open notification settings
+      10          319  confirm notification settings
+      11          428  receive notifications as Email
+      12          334  select the existing schedule
+      13          205  select the existing class
+      14          332  view schedule
+      15          206  view class
+      16          253  open student attendance records
+      17          379  select a class-list attendance record
+      18          235  select an editable student-record
+      19          413  edit attendance status
+      20          245  submit attendance record update
+      21          420  trace attendance activity of the class
+      22          150  add new class
+      23          151  enter the name of the class
+      24          152  enter the class detail
+      25          158  submit the class
+      26          177  select the editable class
+      27          163  update the name of the class
+      28          164  update the class detail

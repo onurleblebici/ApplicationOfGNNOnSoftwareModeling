@@ -1,0 +1,20 @@
+1   Error   
+2   Info    confirm prompt  receive
+3   Input   data    Characteristics Contingents Prices  Special change enter    payEUR   payUSD ~free   read
+4   Help    
+5   Save    send    put take    submit
+6   Edit    update
+7   Add New compose create
+8   Ok      
+9   Cancel  cancel  
+10  Process encrypt   sign  serveTEA serveSoda returnMoney
+11  Calculate
+12  Validate    Verify
+13  Navigate    Link Pause overview Continue finish Release
+14  Delete
+15  Get get open    request
+16  Load
+17  Select  select
+18  Print
+19  Login   log access  sign-in log-in
+20  View view    trace   monitor

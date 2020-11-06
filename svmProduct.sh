@@ -1,0 +1,5 @@
+python3 mxe_parser.py --input "data/SodaVendingMachinePL/svmProduct-free.mxe" --output svmProduct-free --as-undirected False --generate-edge-symmetry False --embeddings svmProduct_embeddings.txt
+python3 mxe_parser.py --input "data/SodaVendingMachinePL/svmProduct-payEUR.mxe" --output svmProduct-payEUR --as-undirected False --generate-edge-symmetry False --embeddings svmProduct_embeddings.txt
+python3 mxe_parser.py --input "data/SodaVendingMachinePL/svmProduct-payEURServeSoda.mxe" --output svmProduct-payEURServeSoda --as-undirected False --generate-edge-symmetry False --embeddings svmProduct_embeddings.txt
+python3 mxe_parser.py --input "data/SodaVendingMachinePL/svmProduct-payUSD.mxe" --output svmProduct-payUSD --as-undirected False --generate-edge-symmetry False --embeddings svmProduct_embeddings.txt
+python3 mxe_parser.py --input "data/SodaVendingMachinePL/svmProduct-payUSDServeTea.mxe" --output svmProduct-payUSDServeTea --as-undirected False --generate-edge-symmetry False --embeddings svmProduct_embeddings.txt
