@@ -15,8 +15,9 @@ def parse_args():
     parser.add_argument('--generate-edge-symmetry', default=False, help='For directed graphs, keeps its original nodes but coverts the edge as undirected')
     parser.add_argument('--embeddings', default="embeddings.txt",help="mxe cell embeddings for automatic node feature extraction")
     parser.add_argument('--tab-to-eol', default=True,help="adds an extra tab to the end of each line")
-    parser.add_argument('--add-info-firstline', default=True,help="Adds number of nodes,node features and edges,edge features as first line of output files.")
-    
+    parser.add_argument('--add-info-firstline', default=False,help="Adds number of nodes,node features and edges,edge features as first line of output files.")
+    parser.add_argument('--add-node-labels', default=False, help="Adds the node labels to the last column of the nodes output file.")
+    parser.add_argument('--dublicate-node-features', default=1, help="if arg > 1 then clones same feature given n times")
     args = parser.parse_args()
 
     if args.input is None:
@@ -182,10 +183,14 @@ def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
 
     return undirectedNodes,undirectedEdges,undirectedNodeFeatures,undirectedEdgeFeatures
 
-def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,tab_to_eol,add_info_firstline):
-    nodeMappingsFileName = os.path.join("output",filenamePrefix + "_node_mappings.txt")
-    nodesFileName = os.path.join("output",filenamePrefix + "_nodes.txt")
-    edgesFilename = os.path.join("output",filenamePrefix + "_edges.txt")
+def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,tab_to_eol,add_info_firstline,embeddings,add_node_labels,dublicate_node_features):
+    print('GENERATING OUTPUT FILES')
+    #nodeMappingsFileName = os.path.join("output",filenamePrefix + "_node_mappings.txt")
+    #nodesFileName = os.path.join("output",filenamePrefix + "_nodes.txt")
+    #edgesFilename = os.path.join("output",filenamePrefix + "_edges.txt")
+    nodeMappingsFileName = "./output/"+filenamePrefix + "_node_mappings.txt"
+    nodesFileName = "./output/"+filenamePrefix + "_nodes.txt"
+    edgesFilename = "./output/"+filenamePrefix + "_edges.txt"
 
     with open(nodesFileName, "w") as f:
         if add_info_firstline == True:
@@ -193,7 +198,12 @@ def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdg
         for i in range(len(nodes)):
             f.write("{0}".format(i))
             for j in range(len(nodeFeatures[0])):
-                f.write("\t{0}".format(nodeFeatures[i][j]))
+                for d in range(dublicate_node_features):
+                    f.write("\t{0}".format(nodeFeatures[i][j]))
+            if add_node_labels == True:
+                key = nodeFeatures[i][0]
+                print("writing label of node "+ str(key) +" label is " + embeddings[str(key)][0] )
+                f.write("\t{0}".format( embeddings[str(key)][0] ))
             f.write("\n")
     
     table = []
@@ -337,13 +347,13 @@ def loadEmbeddings(embeddingsFilename):
     return nodeFeatureEmbeddings
 
 def findEmbedding(embeddings,text):
+    if text == "[" or text == "]":
+        return 0
     for e in embeddings:
         for word in embeddings[e]:
             if re.search(word, text, re.IGNORECASE):
-                print("embedding found for text:'"+text+"' val:'"+str(e)+"'")
+                #print("embedding found for text:'"+text+"' val:'"+str(e)+"'")
                 return e    
-    if text == "[" or text == "]":
-        return 0
     print("embedding NOT FOUND for text:'"+text+"'")
     return 0
 
@@ -377,7 +387,7 @@ def main():
     nodeFeatureEmbeddings = loadEmbeddings(args.embeddings)
     print("nodeFeatureEmbeddings")
     print(tabulate(nodeFeatureEmbeddings))
-    
+
 
     nodeFeatures = []
     for i in range(len(nodes)):
@@ -385,10 +395,10 @@ def main():
         for j in range(int(args.number_of_node_features)):
             val = 0
             if j == 0:
-                print("searching embedding for:"+cells[nodes[i]])
+                #print("searching embedding for:"+cells[nodes[i]])
                 val = findEmbedding(nodeFeatureEmbeddings,cells[nodes[i]])
             nodeFeatures[i].append(val)
-    exit(1)
+    
     edgeFeatures = []
     for i in range(len(edges)):
         edgeFeatures.append([])
@@ -415,7 +425,7 @@ def main():
     #print("adjacencyMatrix")
     #print(adjacencyMatrix)
     print(args.tab_to_eol)
-    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,eval(args.tab_to_eol),eval(args.add_info_firstline))
+    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,args.tab_to_eol,eval(args.add_info_firstline),nodeFeatureEmbeddings,eval(args.add_node_labels),int(args.dublicate_node_features))
 
 
 

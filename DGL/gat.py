@@ -1,49 +1,82 @@
-"""
-Graph Attention Networks in DGL using SPMV optimization.
-References
-----------
-Paper: https://arxiv.org/abs/1710.10903
-Author's code: https://github.com/PetarV-/GAT
-Pytorch implementation: https://github.com/Diego999/pyGAT
-"""
-
 import torch
 import torch.nn as nn
-import dgl.function as fn
-from dgl.nn.pytorch import edge_softmax, GATConv
+import torch.nn.functional as F
+
+
+class GATLayer(nn.Module):
+    def __init__(self, g, in_dim, out_dim):
+        super(GATLayer, self).__init__()
+        self.g = g
+        # equation (1)
+        self.fc = nn.Linear(in_dim, out_dim, bias=False)
+        # equation (2)
+        self.attn_fc = nn.Linear(2 * out_dim, 1, bias=False)
+        self.reset_parameters()
+
+    def reset_parameters(self):
+        """Reinitialize learnable parameters."""
+        gain = nn.init.calculate_gain('relu')
+        nn.init.xavier_normal_(self.fc.weight, gain=gain)
+        nn.init.xavier_normal_(self.attn_fc.weight, gain=gain)
+
+    def edge_attention(self, edges):
+        # edge UDF for equation (2)
+        z2 = torch.cat([edges.src['z'], edges.dst['z']], dim=1)
+        a = self.attn_fc(z2)
+        return {'e': F.leaky_relu(a)}
+
+    def message_func(self, edges):
+        # message UDF for equation (3) & (4)
+        return {'z': edges.src['z'], 'e': edges.data['e']}
+
+    def reduce_func(self, nodes):
+        # reduce UDF for equation (3) & (4)
+        # equation (3)
+        alpha = F.softmax(nodes.mailbox['e'], dim=1)
+        # equation (4)
+        h = torch.sum(alpha * nodes.mailbox['z'], dim=1)
+        return {'h': h}
+
+    def forward(self, h):
+        # equation (1)
+        z = self.fc(h)
+        self.g.ndata['z'] = z
+        # equation (2)
+        self.g.apply_edges(self.edge_attention)
+        # equation (3) & (4)
+        self.g.update_all(self.message_func, self.reduce_func)
+        return self.g.ndata.pop('h')
+
+
+class MultiHeadGATLayer(nn.Module):
+    def __init__(self, g, in_dim, out_dim, num_heads, merge='cat'):
+        super(MultiHeadGATLayer, self).__init__()
+        self.heads = nn.ModuleList()
+        for i in range(num_heads):
+            self.heads.append(GATLayer(g, in_dim, out_dim))
+        self.merge = merge
+
+    def forward(self, h):
+        head_outs = [attn_head(h) for attn_head in self.heads]
+        if self.merge == 'cat':
+            # concat on the output feature dimension (dim=1)
+            return torch.cat(head_outs, dim=1)
+        else:
+            # merge using average
+            return torch.mean(torch.stack(head_outs))
 
 
 class GAT(nn.Module):
-    def __init__(self,
-                 g,
-                 num_layers,
-                 in_dim,
-                 num_hidden,
-                 num_classes,
-                 heads,
-                 activation,
-                 feat_drop,
-                 attn_drop,
-                 negative_slope,
-                 residual):
+    def __init__(self, g, in_dim, hidden_dim, out_dim, num_heads):
         super(GAT, self).__init__()
-        self.g = g
-        self.num_layers = num_layers
-        self.gat_layers = nn.ModuleList()
-        self.activation = activation
-        # input projection (no residual)
-        self.gat_layers.append(GATConv(in_dim, num_hidden, heads[0],feat_drop, attn_drop, negative_slope, False, self.activation))
-        # hidden layers
-        for l in range(1, num_layers):
-            # due to multi-head, the in_dim = num_hidden * num_heads
-            self.gat_layers.append(GATConv(num_hidden * heads[l-1], num_hidden, heads[l],feat_drop, attn_drop, negative_slope, residual, self.activation))
-        # output projection
-        self.gat_layers.append(GATConv(num_hidden * heads[-2], num_classes, heads[-1],feat_drop, attn_drop, negative_slope, residual, None))
+        self.layer1 = MultiHeadGATLayer(g, in_dim, hidden_dim, num_heads)
+        # Be aware that the input dimension is hidden_dim*num_heads since
+        # multiple head outputs are concatenated together. Also, only
+        # one attention head in the output layer.
+        self.layer2 = MultiHeadGATLayer(g, hidden_dim * num_heads, out_dim, 1)
 
-    def forward(self, inputs):
-        h = inputs
-        for l in range(self.num_layers):
-            h = self.gat_layers[l](self.g, h).flatten(1)
-        # output projection
-        logits = self.gat_layers[-1](self.g, h).mean(1)
-        return logits
+    def forward(self, h):
+        h = self.layer1(h)
+        h = F.elu(h)
+        h = self.layer2(h)
+        return h

@@ -1,0 +1,11 @@
+  NodeId    MxeCellId  MxeCellName
+--------  -----------  ---------------------
+       0           40  [
+       1           66  ]
+       2           92  get balance
+       3          167  select deposit
+       4          168  put money
+       5          178  enter deposit amount
+       6          185  select withdraw
+       7          186  take money
+       8          187  enter withdraw amount

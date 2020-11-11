@@ -1,0 +1,425 @@
+  NodeId  MxeCellId    MxeCellName
+--------  -----------  ------------------------------------------
+       0  2            [
+       1  3            ]
+       2  10-275       log in
+       3  10-266       access as a teacher
+       4  10-274       turn editing on
+       5  10-314       open class records
+       6  10-440       delete class
+       7  10-184       confirm deletion
+       8  10-219       select the deletable class
+       9  10-150       add new class
+      10  10-151       enter the name of the class
+      11  10-152       enter the class detail
+      12  10-158       submit the class
+      13  10-177       select the editable class
+      14  10-163       update the name of the class
+      15  10-164       update the class detail
+      16  10-234       assign schedule
+      17  10-471       add new schedule
+      18  10-472       enter the days ofthe class
+      19  10-473       enter the hours of the class
+      20  10-478       submit the class schedule
+      21  10-510       update the days ofthe class
+      22  10-512       update the hours of the class
+      23  10-222       select the editable schedule
+      24  10-120       read the access card to the card reader
+      25  10-133       submit attendance
+      26  10-137       confirm your identity
+      27  10-317       open notification settings
+      28  10-319       confirm notification settings
+      29  10-428       receive notifications as Email
+      30  10-334       select the existing schedule
+      31  10-205       select the existing class
+      32  10-332       view schedule
+      33  10-206       view class
+      34  10-253       open student attendance records
+      35  10-379       select a class-list attendance record
+      36  10-235       select an editable student-record
+      37  10-413       edit attendance status
+      38  10-245       submit attendance record update
+      39  10-420       trace attendance activity of the class
+      40  10-223       select the existing record
+      41  10-179       view record
+      42  10-337       monitor current attendance status
+      43  10-555       open myattendance records
+      44  10-559       access as a student
+      45  11-275       log in
+      46  11-266       access as a teacher
+      47  11-274       turn editing on
+      48  11-314       open class records
+      49  11-440       delete class
+      50  11-184       confirm deletion
+      51  11-219       select the deletable class
+      52  11-150       add new class
+      53  11-151       enter the name of the class
+      54  11-152       enter the class detail
+      55  11-158       submit the class
+      56  11-177       select the editable class
+      57  11-163       update the name of the class
+      58  11-164       update the class detail
+      59  11-234       assign schedule
+      60  11-471       add new schedule
+      61  11-472       enter the days ofthe class
+      62  11-473       enter the hours of the class
+      63  11-478       submit the class schedule
+      64  11-510       update the days ofthe class
+      65  11-512       update the hours of the class
+      66  11-222       select the editable schedule
+      67  11-133       submit attendance
+      68  11-137       confirm your identity
+      69  11-317       open notification settings
+      70  11-319       confirm notification settings
+      71  11-428       receive notifications as SMS
+      72  11-334       select the existing schedule
+      73  11-205       select the existing class
+      74  11-332       view schedule
+      75  11-206       view class
+      76  11-253       open student attendance records
+      77  11-379       select a class-list attendance record
+      78  11-235       select an editable student-record
+      79  11-413       edit attendance status
+      80  11-245       submit attendance record update
+      81  11-420       trace attendance activity of the class
+      82  11-223       select the existing record
+      83  11-179       view record
+      84  11-337       monitor current attendance status
+      85  11-555       open myattendance records
+      86  11-559       access as a student
+      87  11-99        show the barcode to the barcodereader
+      88  11-101       enter barcode manually
+      89  12-275       log in
+      90  12-266       access as a teacher
+      91  12-274       turn editing on
+      92  12-314       open class records
+      93  12-440       delete class
+      94  12-184       confirm deletion
+      95  12-219       select the deletable class
+      96  12-150       add new class
+      97  12-151       enter the name of the class
+      98  12-152       enter the class detail
+      99  12-158       submit the class
+     100  12-177       select the editable class
+     101  12-163       update the name of the class
+     102  12-164       update the class detail
+     103  12-234       assign schedule
+     104  12-471       add new schedule
+     105  12-472       enter the days ofthe class
+     106  12-473       enter the hours of the class
+     107  12-478       submit the class schedule
+     108  12-510       update the days ofthe class
+     109  12-512       update the hours of the class
+     110  12-222       select the editable schedule
+     111  12-120       put your finger to the fingerprint scanner
+     112  12-133       submit attendance
+     113  12-137       confirm your identity
+     114  12-317       open notification settings
+     115  12-319       confirm notification settings
+     116  12-428       receive notifications as email
+     117  12-334       select the existing schedule
+     118  12-205       select the existing class
+     119  12-332       view schedule
+     120  12-206       view class
+     121  12-253       open student attendance records
+     122  12-379       select a class-list attendance record
+     123  12-235       select an editable student-record
+     124  12-413       edit attendance status
+     125  12-245       submit attendance record update
+     126  12-420       trace attendance activity of the class
+     127  12-223       select the existing record
+     128  12-179       view record
+     129  12-337       monitor current attendance status
+     130  12-555       open myattendance records
+     131  12-559       access as a student
+     132  13-275       log in
+     133  13-266       access as a teacher
+     134  13-274       turn editing on
+     135  13-314       open class records
+     136  13-440       delete class
+     137  13-184       confirm deletion
+     138  13-219       select the deletable class
+     139  13-150       add new class
+     140  13-151       enter the name of the class
+     141  13-152       enter the class detail
+     142  13-158       submit the class
+     143  13-177       select the editable class
+     144  13-163       update the name of the class
+     145  13-164       update the class detail
+     146  13-234       assign schedule
+     147  13-471       add new schedule
+     148  13-472       enter the days ofthe class
+     149  13-473       enter the hours of the class
+     150  13-478       submit the class schedule
+     151  13-510       update the days ofthe class
+     152  13-512       update the hours of the class
+     153  13-222       select the editable schedule
+     154  13-120       show the QR code to the QR code reader
+     155  13-133       submit attendance
+     156  13-137       confirm your identity
+     157  13-317       open notification settings
+     158  13-319       confirm notification settings
+     159  13-428       receive notifications as SMS
+     160  13-334       select the existing schedule
+     161  13-205       select the existing class
+     162  13-332       view schedule
+     163  13-206       view class
+     164  13-253       open student attendance records
+     165  13-379       select a class-list attendance record
+     166  13-235       select an editable student-record
+     167  13-413       edit attendance status
+     168  13-245       submit attendance record update
+     169  13-420       trace attendance activity of the class
+     170  13-223       select the existing record
+     171  13-179       view record
+     172  13-337       monitor current attendance status
+     173  13-555       open myattendance records
+     174  13-559       access as a student
+     175  14-275       log in
+     176  14-266       access as a teacher
+     177  14-274       turn editing on
+     178  14-314       open class records
+     179  14-150       add new class
+     180  14-151       enter the name of the class
+     181  14-152       enter the class detail
+     182  14-158       submit the class
+     183  14-177       select the editable class
+     184  14-163       update the name of the class
+     185  14-164       update the class detail
+     186  14-471       add new schedule
+     187  14-472       enter the days ofthe class
+     188  14-473       enter the hours of the class
+     189  14-478       submit the class schedule
+     190  14-510       update the days ofthe class
+     191  14-512       update the hours of the class
+     192  14-222       select the editable schedule
+     193  14-120       read the access card to the card reader
+     194  14-133       submit attendance
+     195  14-137       confirm your identity
+     196  14-317       open notification settings
+     197  14-319       confirm notification settings
+     198  14-428       receive notifications as Email
+     199  14-334       select the existing schedule
+     200  14-205       select the existing class
+     201  14-332       view schedule
+     202  14-206       view class
+     203  14-253       open student attendance records
+     204  14-379       select a class-list attendance record
+     205  14-235       select an editable student-record
+     206  14-413       edit attendance status
+     207  14-245       submit attendance record update
+     208  14-420       trace attendance activity of the class
+     209  15-275       log in
+     210  15-277       submit attendance
+     211  15-278       confirm your identity
+     212  15-279       show the barcode to the barcodereader
+     213  15-280       enter barcode manually
+     214  15-266       access as a student
+     215  15-253       open myattendance records
+     216  15-314       open class records
+     217  15-179       view record
+     218  15-223       select the existing record
+     219  15-205       select the existing class
+     220  15-206       view class
+     221  15-332       view schedule
+     222  15-334       select the existing schedule
+     223  15-317       open notification settings
+     224  15-319       confirm notification settings
+     225  15-428       receive notifications as SMS
+     226  16-275       log in
+     227  16-266       access as a teacher
+     228  16-274       turn editing on
+     229  16-314       open class records
+     230  16-440       delete class
+     231  16-184       confirm deletion
+     232  16-219       select the deletable class
+     233  16-150       add new class
+     234  16-151       enter the name of the class
+     235  16-152       enter the class detail
+     236  16-158       submit the class
+     237  16-177       select the editable class
+     238  16-163       update the name of the class
+     239  16-164       update the class detail
+     240  16-120       read the access card to the card reader
+     241  16-133       submit attendance
+     242  16-137       confirm your identity
+     243  16-317       open notification settings
+     244  16-319       confirm notification settings
+     245  16-428       receive notifications as Email
+     246  16-334       select the existing schedule
+     247  16-205       select the existing class
+     248  16-332       view schedule
+     249  16-206       view class
+     250  16-253       open student attendance records
+     251  16-379       select a class-list attendance record
+     252  16-235       select an editable student-record
+     253  16-413       edit attendance status
+     254  16-245       submit attendance record update
+     255  16-420       trace attendance activity of the class
+     256  17-275       log in
+     257  17-266       access as a teacher
+     258  17-274       turn editing on
+     259  17-314       open class records
+     260  17-440       delete class
+     261  17-184       confirm deletion
+     262  17-219       select the deletable class
+     263  17-150       add new class
+     264  17-151       enter the name of the class
+     265  17-152       enter the class detail
+     266  17-158       submit the class
+     267  17-177       select the editable class
+     268  17-163       update the name of the class
+     269  17-164       update the class detail
+     270  17-120       put your finger to the fingerprint scanner
+     271  17-133       submit attendance
+     272  17-137       confirm your identity
+     273  17-317       open notification settings
+     274  17-319       confirm notification settings
+     275  17-428       receive notifications as Email
+     276  17-334       select the existing schedule
+     277  17-205       select the existing class
+     278  17-332       view schedule
+     279  17-206       view class
+     280  17-253       open student attendance records
+     281  17-379       select a class-list attendance record
+     282  17-235       select an editable student-record
+     283  17-413       edit attendance status
+     284  17-245       submit attendance record update
+     285  17-420       trace attendance activity of the class
+     286  18-275       log in
+     287  18-266       access as a teacher
+     288  18-274       turn editing on
+     289  18-314       open class records
+     290  18-440       delete class
+     291  18-184       confirm deletion
+     292  18-219       select the deletable class
+     293  18-150       add new class
+     294  18-151       enter the name of the class
+     295  18-152       enter the class detail
+     296  18-158       submit the class
+     297  18-177       select the editable class
+     298  18-163       update the name of the class
+     299  18-164       update the class detail
+     300  18-133       submit attendance
+     301  18-137       confirm your identity
+     302  18-317       open notification settings
+     303  18-319       confirm notification settings
+     304  18-428       receive notifications as SMS
+     305  18-334       select the existing schedule
+     306  18-205       select the existing class
+     307  18-332       view schedule
+     308  18-206       view class
+     309  18-253       open student attendance records
+     310  18-379       select a class-list attendance record
+     311  18-235       select an editable student-record
+     312  18-413       edit attendance status
+     313  18-245       submit attendance record update
+     314  18-420       trace attendance activity of the class
+     315  18-127       show the QR code to the QR code reader
+     316  19-275       log in
+     317  19-266       access as a teacher
+     318  19-274       turn editing on
+     319  19-314       open class records
+     320  19-120       read the access card to the card reader
+     321  19-133       submit attendance
+     322  19-137       confirm your identity
+     323  19-317       open notification settings
+     324  19-319       confirm notification settings
+     325  19-428       receive notifications as Email
+     326  19-334       select the existing schedule
+     327  19-205       select the existing class
+     328  19-332       view schedule
+     329  19-206       view class
+     330  19-253       open student attendance records
+     331  19-379       select a class-list attendance record
+     332  19-235       select an editable student-record
+     333  19-413       edit attendance status
+     334  19-245       submit attendance record update
+     335  19-420       trace attendance activity of the class
+     336  19-150       add new class
+     337  19-151       enter the name of the class
+     338  19-152       enter the class detail
+     339  19-158       submit the class
+     340  19-177       select the editable class
+     341  19-163       update the name of the class
+     342  19-164       update the class detail
+     343  20-275       log in
+     344  20-277       submit attendance
+     345  20-278       confirm your identity
+     346  20-279       show the barcode to the barcodereader
+     347  20-280       enter barcode manually
+     348  20-266       access as a student
+     349  20-253       open myattendance records
+     350  20-314       open class records
+     351  20-179       view record
+     352  20-223       select the existing record
+     353  20-205       select the existing class
+     354  20-206       view class
+     355  20-332       view schedule
+     356  20-334       select the existing schedule
+     357  20-337       monitor current attendance status
+     358  20-317       open notification settings
+     359  20-319       confirm notification settings
+     360  20-428       receive notifications as SMS
+     361  21-275       log in
+     362  21-266       access as a teacher
+     363  21-274       turn editing on
+     364  21-314       open class records
+     365  21-120       read the access card to the card reader
+     366  21-133       submit attendance
+     367  21-137       confirm your identity
+     368  21-317       open notification settings
+     369  21-319       confirm notification settings
+     370  21-428       receive notifications as Email
+     371  21-334       select the existing schedule
+     372  21-205       select the existing class
+     373  21-332       view schedule
+     374  21-206       view class
+     375  21-253       open student attendance records
+     376  21-379       select a class-list attendance record
+     377  21-235       select an editable student-record
+     378  21-413       edit attendance status
+     379  21-245       submit attendance record update
+     380  21-420       trace attendance activity of the class
+     381  21-150       add new class
+     382  21-151       enter the name of the class
+     383  21-152       enter the class detail
+     384  21-158       submit the class
+     385  22-275       log in
+     386  22-266       access as a teacher
+     387  22-274       turn editing on
+     388  22-314       open class records
+     389  22-440       delete class
+     390  22-184       confirm deletion
+     391  22-219       select the deletable class
+     392  22-150       add new class
+     393  22-151       enter the name of the class
+     394  22-152       enter the class detail
+     395  22-158       submit the class
+     396  22-177       select the editable class
+     397  22-163       update the name of the class
+     398  22-164       update the class detail
+     399  22-234       assign schedule
+     400  22-471       add new schedule
+     401  22-472       enter the days ofthe class
+     402  22-473       enter the hours of the class
+     403  22-478       submit the class schedule
+     404  22-510       update the days ofthe class
+     405  22-512       update the hours of the class
+     406  22-222       select the editable schedule
+     407  22-120       read the access card to the card reader
+     408  22-133       submit attendance
+     409  22-137       confirm your identity
+     410  22-317       open notification settings
+     411  22-319       confirm notification settings
+     412  22-428       receive notifications as Email
+     413  22-334       select the existing schedule
+     414  22-205       select the existing class
+     415  22-332       view schedule
+     416  22-206       view class
+     417  22-253       open student attendance records
+     418  22-379       select a class-list attendance record
+     419  22-235       select an editable student-record
+     420  22-413       edit attendance status
+     421  22-245       submit attendance record update
+     422  22-420       trace attendance activity of the class

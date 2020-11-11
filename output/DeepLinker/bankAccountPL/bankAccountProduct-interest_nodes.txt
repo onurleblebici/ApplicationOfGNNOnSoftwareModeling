@@ -1,0 +1,14 @@
+0	0	EntryOrExitNode
+1	0	EntryOrExitNode
+2	15	Get
+3	17	Select
+4	5	Save
+5	3	Input
+6	17	Select
+7	5	Save
+8	3	Input
+9	15	Get
+10	2	Info
+11	2	Info
+12	3	Input
+13	15	Get

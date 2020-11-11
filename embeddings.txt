@@ -1,4 +1,5 @@
-1,Error   
+0,EntryOrExitNode
+1,Error,error*
 2,Info,confirm,prompt,receive
 3,Input,data,Characteristics,Contingents,Prices,Special,change,enter,pay*,~free,read
 4,Help    
@@ -7,7 +8,7 @@
 7,Add,New,compose,create
 8,Ok      
 9,Cancel,cancel  
-1,Process,encrypt,sign,serve*,returnMoney
+10,Process,encrypt,sign,serve*,returnMoney
 11,Calculate
 12,Validate,Verify
 13,Navigate,Link,Pause,overview,Continue,finish,Release
