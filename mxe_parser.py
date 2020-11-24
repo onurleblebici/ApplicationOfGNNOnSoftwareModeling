@@ -17,7 +17,7 @@ def parse_args():
     parser.add_argument('--tab-to-eol', default=True,help="adds an extra tab to the end of each line")
     parser.add_argument('--add-info-firstline', default=False,help="Adds number of nodes,node features and edges,edge features as first line of output files.")
     parser.add_argument('--add-node-labels', default=False, help="Adds the node labels to the last column of the nodes output file.")
-    parser.add_argument('--dublicate-node-features', default=1, help="if arg > 1 then clones same feature given n times")
+    parser.add_argument('--duplicate-node-features', default=1, help="if arg > 1 then clones same feature given n times")
     args = parser.parse_args()
 
     if args.input is None:
@@ -183,7 +183,7 @@ def convertToUndirectedGraph(nodes,edges,nodeFeatures,edgeFeatures):
 
     return undirectedNodes,undirectedEdges,undirectedNodeFeatures,undirectedEdgeFeatures
 
-def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,tab_to_eol,add_info_firstline,embeddings,add_node_labels,dublicate_node_features):
+def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,tab_to_eol,add_info_firstline,embeddings,add_node_labels,duplicate_node_features):
     print('GENERATING OUTPUT FILES')
     #nodeMappingsFileName = os.path.join("output",filenamePrefix + "_node_mappings.txt")
     #nodesFileName = os.path.join("output",filenamePrefix + "_nodes.txt")
@@ -198,7 +198,7 @@ def writeToDisk(filenamePrefix,nodes,edges,nodeFeatures,edgeFeatures,generateEdg
         for i in range(len(nodes)):
             f.write("{0}".format(i))
             for j in range(len(nodeFeatures[0])):
-                for d in range(dublicate_node_features):
+                for d in range(duplicate_node_features):
                     f.write("\t{0}".format(nodeFeatures[i][j]))
             if add_node_labels == True:
                 key = nodeFeatures[i][0]
@@ -425,7 +425,7 @@ def main():
     #print("adjacencyMatrix")
     #print(adjacencyMatrix)
     print(args.tab_to_eol)
-    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,args.tab_to_eol,eval(args.add_info_firstline),nodeFeatureEmbeddings,eval(args.add_node_labels),int(args.dublicate_node_features))
+    writeToDisk(args.output,nodes,edges,nodeFeatures,edgeFeatures,generateEdgeSymmetry,cells,args.tab_to_eol,eval(args.add_info_firstline),nodeFeatureEmbeddings,eval(args.add_node_labels),int(args.duplicate_node_features))
 
 
 
